@@ -29,7 +29,13 @@ jobs:
           npx cap sync android
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ok=0
+          for i in 1 2 3 4; do
+            if ./gradlew assembleDebug; then ok=1; break; fi
+            echo "Attempt $i failed, retrying..."
+            sleep 20
+          done
+          [ "$ok" = 1 ]
       - uses: actions/upload-artifact@v4
         with:
           name: ZenithDialer-APK
